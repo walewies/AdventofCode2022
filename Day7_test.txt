@@ -1,0 +1,25 @@
+$ cd /
+$ ls
+dir home
+dir downloads
+100 test.txt
+$ cd home
+$ ls
+dir photos
+dir downloads
+200 test2.txt
+$ cd photos
+$ ls
+100 1.png
+100 2.png
+$ cd ..
+$ cd downloads
+100 1.exe
+100 2.exe
+$ cd ..
+$ cd ..
+$ cd downloads
+$ ls
+500 micro.exe
+500 cat.exe
+300 dog.exe
