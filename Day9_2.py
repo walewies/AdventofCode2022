@@ -49,84 +49,58 @@ def checkCloseEnough(coordinate1, coordinate2):
     else:
         return False
 
-def checkDistanceAndAct(coordinates1, coordinates2, new_steps):
+def checkDistanceAndAct(coordinates1, coordinates2):
     if not checkCloseEnough(coordinates1, coordinates2):
         if testRow(coordinates1, coordinates2):
             if coordinates1[0] - coordinates2[0] > 0:
                 coordinates2[0] += 1
-                new_steps.append(["R", 1])
             else:
                 coordinates2[0] -= 1
-                new_steps.append(["L", 1])
 
         elif testColumn(coordinates1, coordinates2):
             if coordinates1[1] - coordinates2[1] > 0:
                 coordinates2[1] += 1
-                new_steps.append(["U", 1])
             else:
                 coordinates2[1] -= 1
-                new_steps.append(["D", 1])
 
         elif (coordinates1[0] - coordinates2[0] == 2):
-            if coordinates1[1] - coordinates2[1] == 1:
+            if coordinates1[1] - coordinates2[1] == 1 or coordinates1[1] - coordinates2[1] == 2:
                 coordinates2[0] += 1
                 coordinates2[1] += 1
-                new_steps.append(["R", 1])
-                new_steps.append(["U", 1])
-            elif coordinates1[1] - coordinates2[1] == -1:
+            elif coordinates1[1] - coordinates2[1] == -1 or coordinates1[1] - coordinates2[1] == -2:
                 coordinates2[0] += 1
                 coordinates2[1] -= 1
-                new_steps.append(["R", 1])
-                new_steps.append(["D", 1])
 
         elif (coordinates1[0] - coordinates2[0] == -2):
-            if coordinates1[1] - coordinates2[1] == 1:
+            if coordinates1[1] - coordinates2[1] == 1 or coordinates1[1] - coordinates2[1] == 2:
                 coordinates2[0] -= 1
                 coordinates2[1] += 1
-                new_steps.append(["L", 1])
-                new_steps.append(["U", 1])
-            elif coordinates1[1] - coordinates2[1] == -1:
+            elif coordinates1[1] - coordinates2[1] == -1 or coordinates1[1] - coordinates2[1] == -2:
                 coordinates2[0] -= 1
                 coordinates2[1] -= 1
-                new_steps.append(["L", 1])
-                new_steps.append(["D", 1])
 
         elif (coordinates1[1] - coordinates2[1] == 2):
-            if coordinates1[0] - coordinates2[0] == 1:
+            if coordinates1[0] - coordinates2[0] == 1 or coordinates1[0] - coordinates2[0] == 2:
                 coordinates2[0] += 1
                 coordinates2[1] += 1
-                new_steps.append(["R", 1])
-                new_steps.append(["U", 1])
-            elif coordinates1[0] - coordinates2[0] == -1:
+            elif coordinates1[0] - coordinates2[0] == -1 or coordinates1[0] - coordinates2[0] == -2:
                 coordinates2[0] -= 1
                 coordinates2[1] += 1
-                new_steps.append(["L", 1])
-                new_steps.append(["U", 1])
 
         elif (coordinates1[1] - coordinates2[1] == -2):
-            if coordinates1[0] - coordinates2[0] == 1:
+            if coordinates1[0] - coordinates2[0] == 1 or coordinates1[0] - coordinates2[0] == 2:
                 coordinates2[0] += 1
                 coordinates2[1] -= 1
-                new_steps.append(["R", 1])
-                new_steps.append(["D", 1])
-            elif coordinates1[0] - coordinates2[0] == -1:
+            elif coordinates1[0] - coordinates2[0] == -1 or coordinates1[0] - coordinates2[0] == -2:
                 coordinates2[0] -= 1
                 coordinates2[1] -= 1
-                new_steps.append(["L", 1])
-                new_steps.append(["D", 1])
-
+                
         else:
-            print("failure")
+            print("Failure")
             quit()
 
-    # print(str(coordinates2) + "coord 2")
-    # print(str(new_steps) + "New_steps")
-    return [coordinates2, new_steps]
-        
-        # if not (coordinates2 in previous_coordinates):
-        #     previous_coordinates.append([])
-        #     previous_coordinates[-1].append(coordinates2[0])
-        #     previous_coordinates[-1].append(coordinates2[1])
+    return coordinates2
+
 
 def main():
     data_file = open("Day9.txt", "r")
@@ -135,54 +109,45 @@ def main():
     raw_steps = data.split("\n")
     steps = []
 
-    head_coordinates = [0, 0]
-    tail_coordinates = [0, 0]
-
     previous_coordinates = [[0, 0]]
 
     for step in raw_steps:
         movement = step.split(" ")
         steps.append([movement[0], int(movement[1])])
 
-    finished_movements = []
+    previous_steps = []
 
-    for i in range(9):
-        print(i)
-        new_steps = []
-        for step in steps:
+    positions_of_knots = []
+    amount_of_knots = 10
+    for i in range(amount_of_knots):
+        positions_of_knots.append([0, 0])
+
+    for step in steps:      
             action = step[0]
             amount = step[1]
 
             for j in range(amount):
-                # print(tail_coordinates)
                 if action == "R":
-                    head_coordinates[0] += 1
+                    positions_of_knots[0][0] += 1
                 elif action == "L":
-                    head_coordinates[0] -= 1
+                    positions_of_knots[0][0] -= 1
                 elif action == "U":
-                    head_coordinates[1] += 1
+                    positions_of_knots[0][1] += 1
                 elif action == "D":
-                    head_coordinates[1] -= 1
+                    positions_of_knots[0][1] -= 1
 
-                results = checkDistanceAndAct(head_coordinates, tail_coordinates, new_steps)
-                tail_coordinates = results[0]
-                new_steps = results[1]
+                
+                for i in range(len(positions_of_knots) - 1):
 
-                if i == 8:
-                    if not (tail_coordinates in previous_coordinates):
-                        previous_coordinates.append([])
-                        previous_coordinates[-1].append(tail_coordinates[0])
-                        previous_coordinates[-1].append(tail_coordinates[1])
-                        # print(previous_coordinates)
-        finished_movements.append(head_coordinates)
-        head_coordinates = [0, 0]
-        tail_coordinates = [0, 0]
-        steps = new_steps
-        # print(steps)
-
-    # print (finished_movements)  
+                    positions_of_knots[i + 1] = checkDistanceAndAct(positions_of_knots[i], positions_of_knots[i + 1])
+                    
+                    if i == amount_of_knots - 2:
+                        if not (positions_of_knots[i + 1] in previous_coordinates):
+                            previous_coordinates.append([])
+                            previous_coordinates[-1].append(positions_of_knots[i + 1][0])
+                            previous_coordinates[-1].append(positions_of_knots[i + 1][1])
+                      
     print(len(previous_coordinates))
-    print("This Works")
 
 if __name__ == "__main__":
     main()
